@@ -1,8 +1,28 @@
-# Spam Email Detector with AI Email Explanation
+# 🛡️ Spam Email Detector with AI Email Explanation
 
 Classifies an email/SMS as **Spam** or **Ham** using a TF-IDF + Machine Learning
 pipeline, then uses an LLM to explain *why* — without letting the LLM do the
 actual classification.
+
+## 🚀 Live Demo
+
+**Try it here:** https://spam-email-detector-y4n8xrbaupchshegy7w7fe.streamlit.app
+
+> Note: this runs on a free-tier server, so if it hasn't been visited in a
+> while it may take 10-20 seconds to "wake up" on first load.
+
+## 📊 Results
+
+Trained and evaluated on the SMS Spam Collection dataset (5,572 messages):
+
+| Model | Accuracy | Precision | Recall | F1-Score |
+|---|---|---|---|---|
+| **Naive Bayes (selected)** | 96.8% | 99.0% | 75.6% | **85.7%** |
+| Logistic Regression | 95.6% | 98.9% | 65.7% | 78.9% |
+
+Naive Bayes was selected as the best model based on F1-score, which better
+reflects performance on this dataset's class imbalance (747 spam vs. 4,825
+ham messages) than raw accuracy alone.
 
 ## Project Structure
 
@@ -11,12 +31,12 @@ spam_detector/
 ├── app.py                     # Streamlit web app (Task 6 + 7)
 ├── requirements.txt
 ├── data/
-│   └── spam.csv                # <-- you add this (see Setup step 2)
+│   └── spam.csv                # SMS Spam Collection dataset
 ├── models/                     # created after training
 │   ├── spam_model.joblib
 │   ├── tfidf_vectorizer.joblib
 │   └── model_comparison.csv
-├── screenshots/                # EDA charts + confusion matrices land here
+├── screenshots/                # EDA charts + confusion matrices
 └── src/
     ├── preprocessing.py        # Task 2: text cleaning
     ├── eda.py                  # Task 1: dataset exploration
@@ -24,21 +44,18 @@ spam_detector/
     └── llm_explainer.py        # Task 7: LLM integration
 ```
 
-## Setup
+## Setup (running it locally)
 
 **1. Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-**2. Download the dataset**
+**2. Get the dataset**
 
-Get the SMS Spam Collection dataset from either:
+Already included at `data/spam.csv`. If you want to source it yourself:
 - UCI: https://archive.ics.uci.edu/dataset/228/sms+spam+collection
 - Kaggle: https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset
-
-Save it as `data/spam.csv`. It should have columns `v1` (label: spam/ham) and
-`v2` (the message text) — this is the standard layout for both sources.
 
 **3. Set your LLM API key**
 
@@ -70,9 +87,6 @@ This runs the EDA (Task 1), preprocessing (Task 2), TF-IDF vectorization
 (Task 3), trains both Naive Bayes and Logistic Regression, evaluates them
 (Task 5), and saves whichever model scores higher on F1 to `models/`.
 
-Charts (class distribution, word clouds, confusion matrices) are saved to
-`screenshots/` — use these directly in your project report.
-
 **5. Run the app**
 ```bash
 cd ..
@@ -97,12 +111,16 @@ Message → preprocessing.py (clean) → TF-IDF vectorizer → ML model → Spam
                                                       re-classify)
 ```
 
-## Notes for your report
+## Tech Stack
 
-- `model_comparison.csv` (in `models/` after training) has side-by-side
-  Accuracy/Precision/Recall/F1 for both algorithms — good for the "model
-  performance" section of your deliverable.
-- Screenshots in `screenshots/` cover both the EDA (Task 1) and evaluation
-  (Task 5) requirements.
-- The design deliberately keeps the LLM **out** of the classification decision,
-  per the project spec — it only explains and advises.
+Python · Pandas · NumPy · Scikit-learn · NLTK · Streamlit · Groq API (LLM)
+
+## Notes
+
+- The LLM is deliberately kept **out** of the classification decision — it only
+  explains and advises on what the ML model already decided, per the project
+  design.
+- `models/model_comparison.csv` has the full side-by-side metrics for both
+  algorithms.
+- Charts in `screenshots/` cover dataset exploration (word clouds, class
+  distribution) and model evaluation (confusion matrices).
